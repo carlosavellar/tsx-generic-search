@@ -1,5 +1,15 @@
+import { useState, useEffect } from 'react';
+import useDebounce from '../hooks/useDebounce';
+
 export const SearchForm = (props: any) => {
-  const { setSearchQuery, query } = props;
+  const { setSearchQuery } = props;
+  const [query, setQuery] = useState<string>('');
+  const debounceQuery = useDebounce(query, 250);
+
+  useEffect(() => {
+    setSearchQuery(debounceQuery);
+  }, [debounceQuery, setSearchQuery]);
+
   return (
     <div>
       <form>
@@ -9,7 +19,7 @@ export const SearchForm = (props: any) => {
           id="search"
           aria-label="search"
           value={query}
-          onChange={(event) => setSearchQuery(event.target.value)}
+          onChange={(event) => setQuery(event.target.value)}
         />
       </form>
     </div>

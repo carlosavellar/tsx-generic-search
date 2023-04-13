@@ -11,7 +11,12 @@ function App() {
 
   return (
     <div>
-      <SearchForm setSearchQuery={setQuery} query={query} />
+      <SearchForm
+        setSearchQuery={(query: any) => {
+          console.log('Fire in the roll');
+          setQuery(query);
+        }}
+      />
       <h3>Widget</h3>
       <ul>
         {widget
