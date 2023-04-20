@@ -26,7 +26,7 @@ export const sortByBar = (data: Array<FooBar>) => {
   });
 };
 
-export const genericSort = <T>(data: Array<T>, key: keyof T) => {
+export const genericSortSimple = <T>(data: Array<T>, key: keyof T) => {
   return data.sort((a, b) => {
     if (a[key] < b[key]) return -1;
     if (a[key] > b[key]) return 1;
