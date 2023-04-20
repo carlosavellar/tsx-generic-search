@@ -8,6 +8,7 @@ import { people } from './mocks/people';
 import { widgets } from './mocks/widget';
 import { genericSearch } from './utils/genericSearch';
 import { InputForm } from './components/InputForm';
+import { WidgetRenderer } from './components/renderers/WidgetRenderes';
 
 function App() {
   const [query, setQuery] = useState<string>('');
@@ -20,13 +21,13 @@ function App() {
 
       <h3>Widgets</h3>
 
-      <ul>
+      <div>
         {widgets
           .filter((property) => genericSearch(property, ['title', 'description'], query, true))
           .map((widget, index) => {
-            return <li key={index}>{widget.title}</li>;
+            return <WidgetRenderer key={index} {...widget} />;
           })}
-      </ul>
+      </div>
       <h3>People</h3>
       <ul>
         {people
