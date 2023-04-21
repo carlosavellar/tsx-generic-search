@@ -10,12 +10,13 @@ import { genericSearch } from './utils/genericSearch';
 import { InputForm } from './components/InputForm';
 import { WidgetRenderer } from './components/renderers/WidgetRenderes';
 import { PeopleRenderer } from './components/renderers/PeopleRender';
-enum EventType {
-  Mouse,
-  Keyboard,
-}
+import { genericSort } from './utils/genericSort';
+import { IProperty } from './interfaces/property';
+import { Sorters } from './components/Sorters';
 
 function App() {
+  const [peopleRenderer, setPeopleRenderer] = useState<IProperty<IPeople>>({ property: 'firstName' });
+  const [widgetRenderer, setWidgetRenderer] = useState<IProperty<IWidget>>({ property: 'title' });
   const [showPeople, setShowPeople] = useState<boolean>(false);
   const [query, setQuery] = useState<string>('');
 
@@ -32,9 +33,16 @@ function App() {
 
       {!showPeople && (
         <>
+          <Sorters
+            setProperty={(property) => {
+              setWidgetRenderer({ property });
+            }}
+            object={widgets[0]}
+          />
           <h3>Widgets</h3>
           {widgets
             .filter((property) => genericSearch(property, ['title', 'description'], query, true))
+            .sort((a, b) => genericSort(a, b, widgetRenderer.property))
             .map((widget, index) => {
               return <WidgetRenderer key={index} {...widget} />;
             })}
@@ -43,6 +51,12 @@ function App() {
 
       {showPeople && (
         <>
+          <Sorters
+            setProperty={(property) => {
+              setPeopleRenderer({ property });
+            }}
+            object={people[0]}
+          />
           <h3>People</h3>
           {people
             .filter((property) => genericSearch(property, ['firstName', 'lastName'], query, true))
