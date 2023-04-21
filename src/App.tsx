@@ -14,7 +14,7 @@ function App() {
   const [query, setQuery] = useState<string>('');
 
   return (
-    <div className="App">
+    <div className="container">
       <div>
         <InputForm setInputQuery={setQuery} />
       </div>
