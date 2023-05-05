@@ -13,6 +13,20 @@ root.render(
   </React.StrictMode>
 );
 
+function reverseString(string: string) {
+  debugger;
+  let newString =  "";
+  for(let i =  string.length - 1; i >= 0; i--){
+      newString = string[i]
+  }
+  return newString;
+}
+
+reverseString('hello')
+
+
+
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
