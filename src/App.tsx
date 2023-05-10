@@ -11,6 +11,7 @@ import { genericSort } from './utils/genericSort';
 import { SortProperty } from './components/SortGeneric';
 import { genericFilter } from './utils/genericFilter';
 import { IWidget } from './interfaces/IWidget';
+import { Filters } from './components/Filters';
 
 function App() {
   const [query, setQuery] = useState<string>('');
@@ -18,13 +19,29 @@ function App() {
     property: 'firstName',
     isDescending: true,
   });
-  const [widgetFilterProperty, seTwidgetFilterProperty] = useState<Array<keyof IWidget>>([]);
+  const [widgetSortProperty, setWidgetSortProperty] = useState<IProperty<IWidget>>({
+    property: 'title',
+    isDescending: true,
+  });
+  const [widgetFilterProperties, setWidgetFilterProperty] = useState<Array<keyof IWidget>>([]);
+  const [peopleFilterProperties, setPeopleFilterProperty] = useState<Array<keyof IPerson>>([]);
 
   return (
     <div className="App">
       <>
         <InputSearch setPropertyType={setQuery} />
         <h3>People</h3>
+        <Filters
+          properties={peopleFilterProperties}
+          object={people[0]}
+          onChangeFilter={(property) => {
+            peopleFilterProperties.includes(property)
+              ? setPeopleFilterProperty(
+                  peopleFilterProperties.filter((peopleFilterProperty) => peopleFilterProperty !== property)
+                )
+              : setPeopleFilterProperty([...peopleFilterProperties, property]);
+          }}
+        />
         <SortProperty
           setPropertyType={(propertyType) => {
             setPeopleSortProperty(propertyType);
@@ -44,9 +61,27 @@ function App() {
       </>
       <>
         <h3>Widget</h3>
+        <Filters
+          properties={widgetFilterProperties}
+          object={widgets[0]}
+          onChangeFilter={(property) => {
+            widgetFilterProperties.includes(property)
+              ? setWidgetFilterProperty(
+                  widgetFilterProperties.filter((widgetFilterProperty) => widgetFilterProperty !== property)
+                )
+              : setWidgetFilterProperty([...widgetFilterProperties, property]);
+          }}
+        />
+        <SortProperty
+          setPropertyType={(propertyType) => {
+            setWidgetSortProperty(propertyType);
+          }}
+          object={widgets[0]}
+        />
         {widgets
           .filter((widget) => genericSearch(widget, ['title', 'description'], query, true))
-          .filter((widget) => genericFilter(widget, widgetFilterProperty))
+          .sort((a, b) => genericSort(a, b, widgetSortProperty))
+          .filter((widget) => genericFilter(widget, widgetFilterProperties))
           .map((widget) => {
             return (
               <div>
