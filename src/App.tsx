@@ -12,7 +12,10 @@ import { SortProperty } from './components/SortGeneric';
 
 function App() {
   const [query, setQuery] = useState<string>('');
-  const [peopleSortProperty, setPeopleSortProperty] = useState<IProperty<IPerson>>({ property: 'firstName' });
+  const [peopleSortProperty, setPeopleSortProperty] = useState<IProperty<IPerson>>({
+    property: 'firstName',
+    isDescending: true,
+  });
 
   return (
     <div className="App">
@@ -20,14 +23,14 @@ function App() {
         <InputSearch setPropertyType={setQuery} />
         <h3>People</h3>
         <SortProperty
-          setPropertyType={(property) => {
-            setPeopleSortProperty({ property });
+          setPropertyType={(propertyType) => {
+            setPeopleSortProperty(propertyType);
           }}
           object={people[0]}
         />
         {people
           .filter((widget) => genericFilter(widget, ['firstName', 'lastName'], query, true))
-          .sort((a, b) => genericSort(a, b, peopleSortProperty.property))
+          .sort((a, b) => genericSort(a, b, peopleSortProperty))
           .map((person) => {
             return (
               <div>

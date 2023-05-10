@@ -2,7 +2,7 @@ import { IProperty } from '../interfaces/IProperty';
 
 interface ISortProperty<T> {
   object: T extends {} ? T : never;
-  setPropertyType: (property: keyof T) => void;
+  setPropertyType: (propertyType: IProperty<T>) => void;
 }
 
 export const SortProperty = <T,>(props: ISortProperty<T>) => {
@@ -14,11 +14,20 @@ export const SortProperty = <T,>(props: ISortProperty<T>) => {
         id="sort"
         name="sort"
         onChange={(event) => {
-          setPropertyType(event.target.value as any);
+          ('');
+          const value = event.target.value.split('-');
+          if (value.length === 2) {
+            setPropertyType({ property: value[0] as any, isDescending: value[1] === 'true' });
+          }
         }}
       >
         {Object.keys(object).map((key) => {
-          return <option value={key}>sort by {key}</option>;
+          return (
+            <>
+              <option value={`${key}-true`}>sort by {`${key}-true`}</option>
+              <option value={`${key}-false`}>sort by {`${key}-false`}</option>
+            </>
+          );
         })}
       </select>
     </>
