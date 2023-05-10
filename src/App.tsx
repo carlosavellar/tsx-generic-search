@@ -3,12 +3,14 @@ import logo from './logo.svg';
 import './App.css';
 import people from './mock/people';
 import widgets from './mock/widgets';
-import { genericFilter } from './utils/genericFilter';
+import { genericSearch } from './utils/genericSearch';
 import { InputSearch } from './components/InputSearch';
 import { IPerson } from './interfaces/IPerson';
 import { IProperty } from './interfaces/IProperty';
 import { genericSort } from './utils/genericSort';
 import { SortProperty } from './components/SortGeneric';
+import { genericFilter } from './utils/genericFilter';
+import { IWidget } from './interfaces/IWidget';
 
 function App() {
   const [query, setQuery] = useState<string>('');
@@ -16,6 +18,7 @@ function App() {
     property: 'firstName',
     isDescending: true,
   });
+  const [widgetFilterProperty, seTwidgetFilterProperty] = useState<Array<keyof IWidget>>([]);
 
   return (
     <div className="App">
@@ -29,7 +32,7 @@ function App() {
           object={people[0]}
         />
         {people
-          .filter((widget) => genericFilter(widget, ['firstName', 'lastName'], query, true))
+          .filter((widget) => genericSearch(widget, ['firstName', 'lastName'], query, true))
           .sort((a, b) => genericSort(a, b, peopleSortProperty))
           .map((person) => {
             return (
@@ -42,7 +45,8 @@ function App() {
       <>
         <h3>Widget</h3>
         {widgets
-          .filter((widget) => genericFilter(widget, ['title', 'description'], query, true))
+          .filter((widget) => genericSearch(widget, ['title', 'description'], query, true))
+          .filter((widget) => genericFilter(widget, widgetFilterProperty))
           .map((widget) => {
             return (
               <div>
