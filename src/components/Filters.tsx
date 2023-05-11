@@ -1,28 +1,39 @@
-interface IFilters<T> {
+import { IFilter } from '../interfaces/IFilter';
+
+interface IFiltersSelect<T> {
   object: T extends {} ? T : never;
-  onChangeFilter: (property: keyof T) => void;
-  properties: Array<keyof T>;
+  onChangeFilter: (property: IFilter<T>) => void;
+  properties: Array<IFilter<T>>;
 }
-export const Filters = <T,>(props: IFilters<T>) => {
+export const Filters = <T,>(props: IFiltersSelect<T>) => {
   const { object, onChangeFilter, properties } = props;
   return (
     <>
       <label className="mt-3">Filters try us too</label>
-      {Object.keys(object).map((key) => {
+      {Object.keys(object).map((key, index) => {
         return (
-          <>
+          <div key={index}>
             <input
               type="checkbox"
               value={key}
-              key={key}
-              id="each"
+              id={`${key}-true`}
               onChange={() => {
-                onChangeFilter(key as any);
+                onChangeFilter({ property: key as any, isTruthySelected: true });
               }}
-              checked={properties.some((property) => property === key)}
+              checked={properties.some((property) => property.property === key && property.isTruthySelected)}
             />
-            <label htmlFor="each"> Filter by {key} </label>
-          </>
+            <label htmlFor="each"> Filter by {key} is truthy </label>
+            <input
+              type="checkbox"
+              value={key}
+              id={`${key}-false`}
+              onChange={() => {
+                onChangeFilter({ property: key as any, isTruthySelected: false });
+              }}
+              checked={properties.some((property) => property.property === key && !property.isTruthySelected)}
+            />
+            <label htmlFor={key}> Filter by {key} is falsy</label>
+          </div>
         );
       })}
     </>

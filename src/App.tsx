@@ -6,25 +6,26 @@ import widgets from './mock/widgets';
 import { genericSearch } from './utils/genericSearch';
 import { InputSearch } from './components/InputSearch';
 import { IPerson } from './interfaces/IPerson';
-import { IProperty } from './interfaces/IProperty';
+import { ISorter } from './interfaces/ISorter';
 import { genericSort } from './utils/genericSort';
 import { SortProperty } from './components/SortGeneric';
 import { genericFilter } from './utils/genericFilter';
 import { IWidget } from './interfaces/IWidget';
 import { Filters } from './components/Filters';
+import { IFilter } from './interfaces/IFilter';
 
 function App() {
   const [query, setQuery] = useState<string>('');
-  const [peopleSortProperty, setPeopleSortProperty] = useState<IProperty<IPerson>>({
+  const [peopleSortProperty, setPeopleSortProperty] = useState<ISorter<IPerson>>({
     property: 'firstName',
     isDescending: true,
   });
-  const [widgetSortProperty, setWidgetSortProperty] = useState<IProperty<IWidget>>({
+  const [widgetSortProperty, setWidgetSortProperty] = useState<ISorter<IWidget>>({
     property: 'title',
     isDescending: true,
   });
-  const [widgetFilterProperties, setWidgetFilterProperty] = useState<Array<keyof IWidget>>([]);
-  const [peopleFilterProperties, setPeopleFilterProperty] = useState<Array<keyof IPerson>>([]);
+  const [widgetFilterProperties, setWidgetFilterProperty] = useState<Array<IFilter<IWidget>>>([]);
+  const [peopleFilterProperties, setPeopleFilterProperty] = useState<Array<IFilter<IPerson>>>([]);
 
   return (
     <div className="App">
@@ -35,11 +36,30 @@ function App() {
           properties={peopleFilterProperties}
           object={people[0]}
           onChangeFilter={(property) => {
-            peopleFilterProperties.includes(property)
-              ? setPeopleFilterProperty(
-                  peopleFilterProperties.filter((peopleFilterProperty) => peopleFilterProperty !== property)
+            const propertyMatch = peopleFilterProperties.some(
+              (peopleFilterProperty) => peopleFilterProperty.property === property.property
+            );
+            const fullMatch = peopleFilterProperties.some(
+              (peopleFilterProperty) =>
+                peopleFilterProperty.property === property.property &&
+                peopleFilterProperty.isTruthySelected === property.isTruthySelected
+            );
+            if (fullMatch) {
+              setPeopleFilterProperty(
+                peopleFilterProperties.filter(
+                  (peopleFilterProperty) => peopleFilterProperty.property !== property.property
                 )
-              : setPeopleFilterProperty([...peopleFilterProperties, property]);
+              );
+            } else if (propertyMatch) {
+              setPeopleFilterProperty([
+                ...peopleFilterProperties.filter(
+                  (peopleFilterProperty) => peopleFilterProperty.property !== property.property
+                ),
+                property,
+              ]);
+            } else {
+              setPeopleFilterProperty([...peopleFilterProperties, property]);
+            }
           }}
         />
         <SortProperty
@@ -51,9 +71,9 @@ function App() {
         {people
           .filter((widget) => genericSearch(widget, ['firstName', 'lastName'], query, true))
           .sort((a, b) => genericSort(a, b, peopleSortProperty))
-          .map((person) => {
+          .map((person, index) => {
             return (
-              <div>
+              <div key={index}>
                 {person.firstName} {person.lastName}
               </div>
             );
@@ -65,11 +85,30 @@ function App() {
           properties={widgetFilterProperties}
           object={widgets[0]}
           onChangeFilter={(property) => {
-            widgetFilterProperties.includes(property)
-              ? setWidgetFilterProperty(
-                  widgetFilterProperties.filter((widgetFilterProperty) => widgetFilterProperty !== property)
+            const propertyMatch = widgetFilterProperties.some(
+              (widgetFilterProperty) => widgetFilterProperty.property === property.property
+            );
+            const fullMatch = widgetFilterProperties.some(
+              (widgetFilterProperty) =>
+                widgetFilterProperty.property === property.property &&
+                widgetFilterProperty.isTruthySelected === property.isTruthySelected
+            );
+            if (fullMatch) {
+              setWidgetFilterProperty(
+                widgetFilterProperties.filter(
+                  (widgetFilterProperty) => widgetFilterProperty.property !== property.property
                 )
-              : setWidgetFilterProperty([...widgetFilterProperties, property]);
+              );
+            } else if (propertyMatch) {
+              setWidgetFilterProperty([
+                ...widgetFilterProperties.filter(
+                  (widgetFilterProperty) => widgetFilterProperty.property !== property.property
+                ),
+                property,
+              ]);
+            } else {
+              setWidgetFilterProperty([...widgetFilterProperties, property]);
+            }
           }}
         />
         <SortProperty
@@ -82,9 +121,9 @@ function App() {
           .filter((widget) => genericSearch(widget, ['title', 'description'], query, true))
           .sort((a, b) => genericSort(a, b, widgetSortProperty))
           .filter((widget) => genericFilter(widget, widgetFilterProperties))
-          .map((widget) => {
+          .map((widget, index) => {
             return (
-              <div>
+              <div key={index}>
                 {widget.title} {widget.description}
               </div>
             );

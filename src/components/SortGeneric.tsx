@@ -1,8 +1,8 @@
-import { IProperty } from '../interfaces/IProperty';
+import { ISorter } from '../interfaces/ISorter';
 
 interface ISortProperty<T> {
   object: T extends {} ? T : never;
-  setPropertyType: (propertyType: IProperty<T>) => void;
+  setPropertyType: (propertyType: ISorter<T>) => void;
 }
 
 export const SortProperty = <T,>(props: ISortProperty<T>) => {
@@ -21,12 +21,12 @@ export const SortProperty = <T,>(props: ISortProperty<T>) => {
           }
         }}
       >
-        {Object.keys(object).map((key) => {
+        {Object.keys(object).map((key, index) => {
           return (
-            <>
+            <div key={index}>
               <option value={`${key}-true`}>sort by {`${key}-true`}</option>
               <option value={`${key}-false`}>sort by {`${key}-false`}</option>
-            </>
+            </div>
           );
         })}
       </select>
