@@ -1,0 +1,3 @@
+{
+  "window.showInformationMessage": "run this cli 'export NODE_OPTIONS=--openssl-legacy-provider'"
+}
