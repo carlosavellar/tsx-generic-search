@@ -9,6 +9,8 @@ import { Sorters } from "./components/Sorters";
 import { IPerson } from "./interfaces/IPerson";
 import { IProperty } from "./interfaces/IProperty";
 import { genericSort } from "./utils/genericSort";
+import { genericFilter } from "./utils/generificFilter";
+import { Filters } from "./components/Filters";
 
 function App() {
   const [query, setQuery] = useState<string>("");
@@ -18,6 +20,9 @@ function App() {
     property: "firstName",
     isTopDown: true,
   });
+  const [peopleFilteredProperties, setPeopleFilteredProperties] = useState<
+    Array<keyof IPerson>
+  >([]);
 
   return (
     <div className="App">
@@ -33,12 +38,30 @@ function App() {
           setPeopleSortProperty(propertyType);
         }}
       />
+      <Filters
+        object={people[0]}
+        properties={peopleFilteredProperties}
+        onChangeFilter={(property) => {
+          peopleFilteredProperties.includes(property)
+            ? setPeopleFilteredProperties(
+                peopleFilteredProperties.filter(
+                  (peopleFilteredProperty: any) =>
+                    peopleFilteredProperty !== property
+                )
+              )
+            : setPeopleFilteredProperties([
+                ...peopleFilteredProperties,
+                property,
+              ]);
+        }}
+      />
       <ul>
         {people
           .sort((a, b) => genericSort(a, b, peopleSortProperty))
           .filter((person) =>
             genericSearch(person, ["firstName", "lastName"], query, true)
           )
+          .filter((person) => genericFilter(person, peopleFilteredProperties))
           .map((person) => {
             return (
               <li>
