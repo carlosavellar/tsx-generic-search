@@ -23,6 +23,8 @@ import { genericSearch } from "./utils/genericSearch";
 import { IProperty, IWidget, IPerson } from "./interfaces";
 import { genericSort } from "./utils/genericSort";
 import GenericSort from "./components/GenericSort";
+import { genericFilter } from "./utils/genericFilter";
+import { Filters } from "./components/Filters";
 
 console.clear();
 console.log(sortByFoo(sortedGenFoo), "genFoo");
@@ -40,6 +42,9 @@ function App() {
   const [widgetSortProperties, setWidgetSortProperties] = useState<
     IProperty<IWidget>
   >({ property: "title", isAscending: true });
+  const [widgetFilterProperties, setWidgetFilterProperties] = useState<
+    Array<keyof IWidget>
+  >([]);
   return (
     <div className="App">
       <header className="App-header">
@@ -55,12 +60,31 @@ function App() {
                     setWidgetSortProperties(property)
                   }
                 />
+                <Filters
+                  object={widgets[0]}
+                  properties={widgetFilterProperties}
+                  onChangeFilter={(property) => {
+                    widgetFilterProperties.includes(property)
+                      ? setWidgetFilterProperties([
+                          ...widgetFilterProperties.splice(
+                            widgetFilterProperties.indexOf(property)
+                          ),
+                        ])
+                      : setWidgetFilterProperties([
+                          ...widgetFilterProperties,
+                          property,
+                        ]);
+                  }}
+                />
                 <List>
                   {widgets
                     .filter((widget) =>
                       genericSearch(widget, ["title"], query, true)
                     )
                     .sort((a, b) => genericSort(a, b, widgetSortProperties))
+                    .filter((widget) =>
+                      genericFilter(widget, widgetFilterProperties)
+                    )
                     .map((widget) => {
                       return (
                         <ListItem key={widget.id}>{widget.title}</ListItem>
