@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap";
 
@@ -6,13 +6,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { people } from "./mocks/people";
 import { Search } from "./components/Search";
 import { searchFilter } from "./utils/searchFilter";
+import { IPerson } from "./interfaces/IPerson";
+import { Sorters } from "./components/Sorters";
+import { IProperty } from "./interfaces/IProperty";
+import { genericSort } from "./utils/genericSort";
 
 function App() {
   const [query, setQuery] = useState<string>("");
-
-  useEffect(() => {
-    console.log(query);
-  }, [query]);
+  const [peopleSortProperty, setPeopleSortProperty] = useState<
+    IProperty<IPerson>
+  >({
+    property: "firstName",
+    isSpecialCase: false,
+  });
 
   return (
     <div className="App">
@@ -24,15 +30,28 @@ function App() {
                 <Col>
                   <h1 className="display-4">People</h1>
                   <Search onSearchQuery={setQuery} />
+                  <Sorters
+                    object={people[0]}
+                    setProperty={(property) => {
+                      setPeopleSortProperty(property);
+                    }}
+                  />
                   <ListGroup>
                     {people
                       .filter((person) =>
-                        searchFilter(person, ["firstName", "lastName"], query),
+                        searchFilter(
+                          person,
+                          ["firstName", "lastName"],
+                          query,
+                          true
+                        )
                       )
+                      .sort((a, b) => genericSort(a, b, peopleSortProperty))
                       .map((person) => {
                         return (
                           <ListGroupItem key={person.firstName}>
-                            {person.firstName} {person.lastName}
+                            {person.firstName} {person.lastName} |{" "}
+                            {person.eyeColor} | {person.birthday}
                           </ListGroupItem>
                         );
                       })}

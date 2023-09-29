@@ -2,7 +2,7 @@ export const searchFilter = <T>(
   object: T,
   properties: Array<keyof T>,
   query: string,
-  isDifferentCase?: boolean,
+  isDifferentCase?: boolean
 ): boolean => {
   if (!query) return true;
   return properties.some((property) => {
