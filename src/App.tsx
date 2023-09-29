@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap";
 
@@ -9,6 +9,10 @@ import { searchFilter } from "./utils/searchFilter";
 
 function App() {
   const [query, setQuery] = useState<string>("");
+
+  useEffect(() => {
+    console.log(query);
+  }, [query]);
 
   return (
     <div className="App">
@@ -23,12 +27,7 @@ function App() {
                   <ListGroup>
                     {people
                       .filter((person) =>
-                        searchFilter(
-                          person,
-                          ["firstName", "lastName"],
-                          query,
-                          false,
-                        ),
+                        searchFilter(person, ["firstName", "lastName"], query),
                       )
                       .map((person) => {
                         return (

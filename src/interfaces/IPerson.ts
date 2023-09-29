@@ -1,6 +1,6 @@
 export interface IPerson {
-    firstName: string,
-    lastName: string,
-    eyeColor: string,
-    birthday: Date,
+  firstName: string;
+  lastName: string;
+  eyeColor: string;
+  birthday: Date;
 }
