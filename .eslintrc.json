@@ -48,7 +48,16 @@
          }
       ],
       "no-shadow": "off",
+      "no-unused-expressions": "off",
       "no-use-before-define": "off",
+      "overrides": [
+         {
+            "rules": {
+               "no-unused-expressions": "off"
+            },
+            "severity": "off"
+         }
+      ],
       "prettier/prettier": [
          "off",
          {
