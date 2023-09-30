@@ -1,4 +1,4 @@
-export interface IProperty<T> {
+export interface ISorter<T> {
   property: keyof T;
   isSpecialCase: boolean;
 }

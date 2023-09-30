@@ -8,7 +8,7 @@ import { Search } from "./components/Search";
 import { searchFilter } from "./utils/searchFilter";
 import { IPerson } from "./interfaces/IPerson";
 import { Sorters } from "./components/Sorters";
-import { IProperty } from "./interfaces/IProperty";
+import { ISorter } from "./interfaces/ISorter";
 import { genericSort } from "./utils/genericSort";
 import { PersonRender } from "./components/renderers/PersonRender";
 import { genericFilter } from "./utils/genericFilter";
@@ -16,7 +16,7 @@ import { Filters } from "./components/Filters";
 
 function App() {
   const [query, setQuery] = useState<string>("");
-  const [peopleSortProperty, setPeopleSortProperty] = useState<IProperty<IPerson>>({
+  const [peopleSortProperty, setPeopleSortProperty] = useState<ISorter<IPerson>>({
     property: "firstName",
     isSpecialCase: false,
   });

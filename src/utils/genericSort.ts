@@ -1,10 +1,6 @@
-import { IProperty } from "../interfaces/IProperty";
+import { ISorter } from "../interfaces/ISorter";
 
-export const genericSort = <T>(
-  a: T,
-  b: T,
-  filteredProperties: IProperty<T>
-) => {
+export const genericSort = <T>(a: T, b: T, filteredProperties: ISorter<T>) => {
   const { isSpecialCase, property } = filteredProperties;
   const result = () => {
     if (a[property] > b[property]) {

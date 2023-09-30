@@ -1,10 +1,10 @@
 import React from "react";
 import { Form, FormGroup, Input, Label } from "reactstrap";
-import { IProperty } from "../interfaces/IProperty";
+import { ISorter } from "../interfaces/ISorter";
 
 interface ISortersProps<T> {
   object: T extends object ? T : never;
-  setProperty: (propertyType: IProperty<T>) => void;
+  setProperty: (propertyType: ISorter<T>) => void;
 }
 
 export function Sorters<T>(props: ISortersProps<T>) {
