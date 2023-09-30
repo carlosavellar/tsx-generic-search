@@ -11,6 +11,8 @@ import { Sorters } from "./components/Sorters";
 import { IProperty } from "./interfaces/IProperty";
 import { genericSort } from "./utils/genericSort";
 import { PersonRender } from "./components/renderers/PersonRender";
+import { genericFilter } from "./utils/genericFilter";
+import { Filters } from "./components/Filters";
 
 function App() {
   const [query, setQuery] = useState<string>("");
@@ -19,7 +21,7 @@ function App() {
     isSpecialCase: false,
   });
 
-  // const [peopleFiltersProperties, setPeopleFiltersProperties ] = useState<>
+  const [peopleFiltersProperties, setPeopleFiltersProperties] = useState<Array<keyof IPerson>>([]);
 
   return (
     <div className="App">
@@ -37,11 +39,19 @@ function App() {
                       setPeopleSortProperty(property);
                     }}
                   />
-
+                  <Filters
+                    object={people[0]}
+                    properties={peopleFiltersProperties}
+                    onChangeFilter={(property) => {
+                      peopleFiltersProperties.includes(property)
+                        ? setPeopleFiltersProperties([...peopleFiltersProperties.splice(peopleFiltersProperties.indexOf(property))])
+                        : setPeopleFiltersProperties([...peopleFiltersProperties, property]);
+                    }}
+                  />
                   {people
                     .filter((person) => searchFilter(person, ["firstName", "lastName"], query, true))
                     .sort((a, b) => genericSort(a, b, peopleSortProperty))
-                    // .filter((person)=>genericFilter(person, peopleFiltersProperties))
+                    .filter((person) => genericFilter(person, peopleFiltersProperties))
                     .map((person) => {
                       /* eslint-disable */
                       return <PersonRender {...person} />;

@@ -52,9 +52,6 @@
       "no-use-before-define": "off",
       "overrides": [
          {
-            "rules": {
-               "no-unused-expressions": "off"
-            },
             "severity": "off"
          }
       ],
