@@ -13,6 +13,7 @@ import { genericSort } from "./utils/genericSort";
 import { PersonRender } from "./components/renderers/PersonRender";
 import { genericFilter } from "./utils/genericFilter";
 import { Filters } from "./components/Filters";
+import { IFilter } from "./interfaces/IFilter";
 
 function App() {
   const [query, setQuery] = useState<string>("");
@@ -21,7 +22,7 @@ function App() {
     isSpecialCase: false,
   });
 
-  const [peopleFiltersProperties, setPeopleFiltersProperties] = useState<Array<keyof IPerson>>([]);
+  const [peopleFiltersProperties, setPeopleFiltersProperties] = useState<Array<IFilter<IPerson>>>([]);
 
   return (
     <div className="App">
@@ -43,9 +44,32 @@ function App() {
                     object={people[0]}
                     properties={peopleFiltersProperties}
                     onChangeFilter={(property) => {
-                      peopleFiltersProperties.includes(property)
-                        ? setPeopleFiltersProperties([...peopleFiltersProperties.splice(peopleFiltersProperties.indexOf(property))])
-                        : setPeopleFiltersProperties([...peopleFiltersProperties, property]);
+                      const propertyMatch = peopleFiltersProperties.some((personFilterProperty) => {
+                        return personFilterProperty.property === property.property;
+                      });
+                      const fullMatch = peopleFiltersProperties.some((personFilterProperty) => {
+                        return (
+                          personFilterProperty.property === property.property &&
+                          personFilterProperty.isTruthySelected === property.isTruthySelected
+                        );
+                      });
+                      if (fullMatch) {
+                        setPeopleFiltersProperties([
+                          ...peopleFiltersProperties.filter(
+                            (peoplefilterProperty) => peoplefilterProperty.property !== property.property
+                          ),
+                          property,
+                        ]);
+                      } else if (propertyMatch) {
+                        setPeopleFiltersProperties([
+                          ...peopleFiltersProperties.filter(
+                            (peoplefilterProperty) => peoplefilterProperty.property !== property.property
+                          ),
+                          property,
+                        ]);
+                      } else {
+                        setPeopleFiltersProperties([...peopleFiltersProperties, property]);
+                      }
                     }}
                   />
                   {people

@@ -34,9 +34,7 @@ export function Sorters<T>(props: ISortersProps<T>) {
                   <option key={`${key}-true`} value={`${key}-true`}>
                     Sort by {key} true
                   </option>
-                  <option key={`${key}-false`} value={`${key}-false`}>
-                    Sort by {key} false
-                  </option>
+                  <option key={`${key}-false`}>Sort by {key} false</option>
                 </>
               );
             })}
