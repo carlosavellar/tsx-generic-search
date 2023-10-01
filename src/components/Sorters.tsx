@@ -3,12 +3,13 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 import { ISorter } from "../interfaces/ISorter";
 
 interface ISortersProps<T> {
-  object: T extends object ? T : never;
+  dataSorters: Array<T>;
   setProperty: (propertyType: ISorter<T>) => void;
 }
 
 export function Sorters<T>(props: ISortersProps<T>) {
-  const { object, setProperty } = props;
+  const { dataSorters, setProperty } = props;
+  const dataObj = dataSorters.length > 0 ? dataSorters[0] : {};
   return (
     <div>
       <Form>
@@ -28,7 +29,7 @@ export function Sorters<T>(props: ISortersProps<T>) {
               }
             }}
           >
-            {Object.keys(object).map((key) => {
+            {Object.keys(dataObj as any).map((key) => {
               return (
                 <>
                   <option key={`${key}-true`} value={`${key}-true`}>

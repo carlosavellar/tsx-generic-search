@@ -35,7 +35,7 @@ function App() {
                   <h1 className="display-4">People</h1>
                   <Search onSearchQuery={setQuery} />
                   <Sorters
-                    object={people[0]}
+                    dataSorters={people}
                     setProperty={(property) => {
                       setPeopleSortProperty(property);
                     }}
