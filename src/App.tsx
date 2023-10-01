@@ -21,69 +21,79 @@ function App() {
     property: "firstName",
     isSpecialCase: false,
   });
+  const [showPeople, setShowPeople] = useState<boolean>(false);
 
   const [peopleFiltersProperties, setPeopleFiltersProperties] = useState<Array<IFilter<IPerson>>>([]);
+
+  const buttonText: string = showPeople ? "Show widgets" : "Show people";
 
   return (
     <div className="App">
       <Container>
         <Row>
-          <Col className="bg-light border">
-            <Container>
-              <Row>
-                <Col>
-                  <h1 className="display-4">People</h1>
-                  <Search onSearchQuery={setQuery} />
-                  <Sorters
-                    dataSorters={people}
-                    setProperty={(property) => {
-                      setPeopleSortProperty(property);
-                    }}
-                  />
-                  <Filters
-                    object={people[0]}
-                    properties={peopleFiltersProperties}
-                    onChangeFilter={(property) => {
-                      const propertyMatch = peopleFiltersProperties.some((personFilterProperty) => {
-                        return personFilterProperty.property === property.property;
-                      });
-                      const fullMatch = peopleFiltersProperties.some((personFilterProperty) => {
-                        return (
-                          personFilterProperty.property === property.property &&
-                          personFilterProperty.isTruthySelected === property.isTruthySelected
-                        );
-                      });
-                      if (fullMatch) {
-                        setPeopleFiltersProperties([
-                          ...peopleFiltersProperties.filter(
-                            (peoplefilterProperty) => peoplefilterProperty.property !== property.property
-                          ),
-                          property,
-                        ]);
-                      } else if (propertyMatch) {
-                        setPeopleFiltersProperties([
-                          ...peopleFiltersProperties.filter(
-                            (peoplefilterProperty) => peoplefilterProperty.property !== property.property
-                          ),
-                          property,
-                        ]);
-                      } else {
-                        setPeopleFiltersProperties([...peopleFiltersProperties, property]);
-                      }
-                    }}
-                  />
-                  {people
-                    .filter((person) => searchFilter(person, ["firstName", "lastName"], query, true))
-                    .sort((a, b) => genericSort(a, b, peopleSortProperty))
-                    .filter((person) => genericFilter(person, peopleFiltersProperties))
-                    .map((person) => {
-                      /* eslint-disable */
-                      return <PersonRender {...person} />;
-                    })}
-                </Col>
-              </Row>
-            </Container>
-          </Col>
+          <button type="button" className="btn btn-primary" onClick={() => setShowPeople(!showPeople)}>
+            {buttonText}
+          </button>
+          {!showPeople && (
+            <Col className="bg-light border">
+              <Container>
+                <Row>
+                  <Col>
+                    <h1 className="display-4">People</h1>
+                    <Search onSearchQuery={setQuery} />
+                    <Sorters
+                      dataSorters={people}
+                      setProperty={(property) => {
+                        setPeopleSortProperty(property);
+                      }}
+                    >
+                      {(person) => <PersonRender {...person} />}
+                    </Sorters>
+                    <Filters
+                      object={people[0]}
+                      properties={peopleFiltersProperties}
+                      onChangeFilter={(property) => {
+                        const propertyMatch = peopleFiltersProperties.some((personFilterProperty) => {
+                          return personFilterProperty.property === property.property;
+                        });
+                        const fullMatch = peopleFiltersProperties.some((personFilterProperty) => {
+                          return (
+                            personFilterProperty.property === property.property &&
+                            personFilterProperty.isTruthySelected === property.isTruthySelected
+                          );
+                        });
+                        if (fullMatch) {
+                          setPeopleFiltersProperties([
+                            ...peopleFiltersProperties.filter(
+                              (peoplefilterProperty) => peoplefilterProperty.property !== property.property
+                            ),
+                            property,
+                          ]);
+                        } else if (propertyMatch) {
+                          setPeopleFiltersProperties([
+                            ...peopleFiltersProperties.filter(
+                              (peoplefilterProperty) => peoplefilterProperty.property !== property.property
+                            ),
+                            property,
+                          ]);
+                        } else {
+                          setPeopleFiltersProperties([...peopleFiltersProperties, property]);
+                        }
+                      }}
+                    />
+                    {people
+                      .filter((person) => searchFilter(person, ["firstName", "lastName"], query, true))
+                      .sort((a, b) => genericSort(a, b, peopleSortProperty))
+                      .filter((person) => genericFilter(person, peopleFiltersProperties))
+                      .map((person, index) => {
+                        /* eslint-disable */
+                        return <PersonRender key={index} {...person} />;
+                      })}
+                  </Col>
+                </Row>
+              </Container>
+            </Col>
+          )}
           <Col className="bg-light border">.col</Col>
         </Row>
       </Container>

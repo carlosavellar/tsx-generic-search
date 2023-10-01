@@ -1,14 +1,17 @@
-import React from "react";
+import React, { PropsWithChildren, ReactNode } from "react";
 import { Form, FormGroup, Input, Label } from "reactstrap";
 import { ISorter } from "../interfaces/ISorter";
 
+// eslint-disable-next-line react/require-default-props
+type PropsWithChildrenFunction<P, T> = P & { children?(item: T): ReactNode };
+
 interface ISortersProps<T> {
   dataSorters: Array<T>;
-  setProperty: (propertyType: ISorter<T>) => void;
+  setProperty: (propertyType: PropsWithChildren<ISorter<T>>) => void;
 }
 
-export function Sorters<T>(props: ISortersProps<T>) {
-  const { dataSorters, setProperty } = props;
+export function Sorters<T>(props: PropsWithChildrenFunction<ISortersProps<T>, T>) {
+  const { dataSorters, setProperty, children } = props;
   const dataObj = dataSorters.length > 0 ? dataSorters[0] : {};
   return (
     <div>
@@ -39,6 +42,7 @@ export function Sorters<T>(props: ISortersProps<T>) {
                 </>
               );
             })}
+            {(children as any) && dataSorters.map((widget) => widget)}
           </Input>
         </FormGroup>
       </Form>
